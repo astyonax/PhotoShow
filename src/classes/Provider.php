@@ -1,10 +1,10 @@
 <?php /**
  * This file implements the class Provider.
- * 
+ *
  * PHP versions 4 and 5
  *
  * LICENSE:
- * 
+ *
  * This file is part of PhotoShow.
  *
  * PhotoShow is free software: you can redistribute it and/or modify
@@ -58,21 +58,21 @@ class Provider
 			{
 				case 1:
 				case 2:
-					$degrees = 0; 
+					$degrees = 0;
 					break;
 				case 3:
 				case 4:
-					$degrees = 180; 
+					$degrees = 180;
 					break;
 				case 5:
-				case 6: 
-					$degrees = 270; 
+				case 6:
+					$degrees = 270;
 					break;
 				case 7:
-				case 8: 
-					$degrees = 90; 
+				case 8:
+					$degrees = 90;
 					break;
-				default: 
+				default:
 					$degrees = 0;
 			}
 		}else{
@@ -104,9 +104,9 @@ class Provider
 
 	/**
 	 * Provide a video  to the user, if he is allowed to
-	 * see it. 
+	 * see it.
 	 *
-	 * @param string $file 
+	 * @param string $file
 	 * @return void
 	 * @author Franck Royer
 	 */
@@ -300,8 +300,8 @@ class Provider
 	 * see it. If $thumb is true, provide the thumb associated
 	 * to the image.
 	 *
-	 * @param string $file 
-	 * @param string $thumb 
+	 * @param string $file
+	 * @param string $thumb
 	 * @return void
 	 * @author Thibaud Rohmer
 	 */
@@ -335,7 +335,7 @@ class Provider
                     Video::FastEncodeVideo($file);
                     $basefile	= 	new File($file);
                     $basepath	=	File::a2r($file);
-                    $path =	Settings::$thumbs_dir.dirname($basepath)."/".$basefile->name.".jpg";	
+                    $path =	Settings::$thumbs_dir.dirname($basepath)."/".$basefile->name.".jpg";
                 }elseif($thumb){ // Img called on a video, return the thumbnail
                     $path = Provider::thumb($file);
                 }else{
@@ -354,16 +354,18 @@ class Provider
         if($output){
 			if($dl){
 				header('Content-Disposition: attachment; filename="'.mb_basename($file).'"');
+				header('Content-Length: ' . filesize($path));
+				header('Content-Description: File Transfer');
 			}else{
 			    static::HTTP_Cache($path);
 			}
-
             if(File::Type($path)=="Image"){
                 header('Content-type: image/jpeg');
+								header('Content-Disposition: attachment; filename=' . urlencode(mb_basename($file)));
             	readfile($path);
             	return;
                 try {
-                    imagejpeg(Provider::autorotate_jpeg ($path));	
+                    imagejpeg(Provider::autorotate_jpeg ($path));
                 }catch(Exception $e){
                     error_log('ERROR/Provider.php: cannot rotate '.$path.': '.$e);
                     readfile($path);
@@ -458,7 +460,7 @@ class Provider
 	/**
 	 * Generates a zip.
 	 *
-	 * @param string $dir  
+	 * @param string $dir
 	 * @return void
 	 * @author Thibaud Rohmer
 	 */
@@ -467,7 +469,7 @@ class Provider
 		/// Check that user is allowed to acces this content
 		if( !Judge::view($dir)){
 			return;
-		}	
+		}
 
 
                 // Get the relative path of the files
@@ -512,7 +514,7 @@ class Provider
                         /// flush();
                 }
                 pclose($fp);
-                
+
                 // Chang to the previous working directory
                 chdir($cwd);
 	}
